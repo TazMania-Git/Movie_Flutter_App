@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:movie_app/models/movie.dart';
 import 'package:movie_app/providers/movies_provider.dart';
 import 'package:movie_app/widgets/widgets.dart';
 import 'package:provider/provider.dart';
@@ -20,8 +21,16 @@ class HomeScreen extends StatelessWidget {
           child: Column(
             children: [
               //Tarjetas inicio
-              CardSwiper(movies: moviesProvider.onDisplayMovies,),
-              MovieSlider()
+              CardSwiper(
+                movies: moviesProvider.onDisplayMovies,
+              ),
+
+              //TODO movie [] y el tittle de pupulares
+              MovieSlider(
+                movies: moviesProvider.popularMovies,
+                tittle: "Populares",
+                onNextPage: () => moviesProvider.getPopularMovies(),
+              )
             ],
             // Slider de peliculas
           ),
