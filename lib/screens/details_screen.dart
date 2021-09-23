@@ -1,23 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:movie_app/models/models.dart';
 import 'package:movie_app/widgets/widgets.dart';
 
 class DetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final String movie =
-        ModalRoute.of(context)?.settings.arguments.toString() ?? 'no-movie';
+    final Movie movie = ModalRoute.of(context)!.settings.arguments as Movie;
+    // print(movie.title);
 
     return Scaffold(
         body: CustomScrollView(
       slivers: [
-        _CustomAppBar(),
+        _CustomAppBar(
+          movie,
+        ),
         SliverList(
             delegate: SliverChildListDelegate([
-          _PosterAndTittle(),
-          _Overview(),
-          _Overview(),
-          _Overview(),
-          _Overview(),
+          _PosterAndTittle(
+            movie,
+          ),
+          _Overview(
+            movie,
+          ),
           CastingCards()
         ]))
       ],
@@ -26,6 +30,10 @@ class DetailScreen extends StatelessWidget {
 }
 
 class _CustomAppBar extends StatelessWidget {
+  final Movie theMovie;
+
+  const _CustomAppBar(this.theMovie);
+
   @override
   Widget build(BuildContext context) {
     return SliverAppBar(
@@ -42,12 +50,13 @@ class _CustomAppBar extends StatelessWidget {
             alignment: Alignment.bottomCenter,
             padding: EdgeInsets.only(bottom: 5),
             child: Text(
-              "movie.title",
+              theMovie.title,
               style: TextStyle(fontSize: 16),
             )),
         background: FadeInImage(
           placeholder: AssetImage('lib/assets/loading.gif'),
-          image: NetworkImage('https://via.placeholder.com/500x300'),
+          // image: NetworkImage('https://via.placeholder.com/500x300'),
+          image: NetworkImage(theMovie.fullBackdropPath),
           fit: BoxFit.cover,
         ),
       ),
@@ -56,6 +65,10 @@ class _CustomAppBar extends StatelessWidget {
 }
 
 class _PosterAndTittle extends StatelessWidget {
+  final Movie theMovie;
+
+  const _PosterAndTittle(this.theMovie);
+
   @override
   Widget build(BuildContext context) {
     final TextTheme textTheme = Theme.of(context).textTheme;
@@ -68,7 +81,8 @@ class _PosterAndTittle extends StatelessWidget {
             borderRadius: BorderRadius.circular(20),
             child: FadeInImage(
               placeholder: AssetImage('lib/assets/no-image.jpg'),
-              image: NetworkImage('https://via.placeholder.com/200x300'),
+              // image: NetworkImage('https://via.placeholder.com/200x300'),
+              image: NetworkImage(theMovie.fullPosterImag),
               height: 150,
             ),
           ),
@@ -79,13 +93,13 @@ class _PosterAndTittle extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Movie Tittle',
+                theMovie.title,
                 style: textTheme.headline5,
                 overflow: TextOverflow.ellipsis,
                 maxLines: 2,
               ),
               Text(
-                'Movie original Tittle',
+                theMovie.originalTitle,
                 style: textTheme.subtitle1,
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
@@ -101,7 +115,7 @@ class _PosterAndTittle extends StatelessWidget {
                     width: 5,
                   ),
                   Text(
-                    'movie vote average',
+                    theMovie.voteAverage.toString(),
                     style: textTheme.caption,
                   )
                 ],
@@ -115,12 +129,16 @@ class _PosterAndTittle extends StatelessWidget {
 }
 
 class _Overview extends StatelessWidget {
+  final Movie theMovie;
+
+  const _Overview(this.theMovie);
+
   @override
   Widget build(BuildContext context) {
     return Container(
         padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
         child: Text(
-          'In ex amet commodo ea reprehenderit consequat sint aliquip mollit proident commodo id labore. Id velit cillum duis amet nostrud laboris id id. Ad ullamco esse ut fugiat culpa enim velit qui ea do eiusmod cillum sint sunt.',
+          theMovie.overview,
           textAlign: TextAlign.justify,
           style: Theme.of(context).textTheme.subtitle1,
         ));
