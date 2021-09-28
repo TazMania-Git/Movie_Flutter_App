@@ -22,7 +22,7 @@ class DetailScreen extends StatelessWidget {
           _Overview(
             movie,
           ),
-          CastingCards()
+          CastingCards(movie.id)
         ]))
       ],
     ));
@@ -48,10 +48,11 @@ class _CustomAppBar extends StatelessWidget {
             color: Colors.black12,
             width: double.infinity,
             alignment: Alignment.bottomCenter,
-            padding: EdgeInsets.only(bottom: 5),
+            padding: EdgeInsets.only(bottom: 5,left: 10,right: 10),
             child: Text(
               theMovie.title,
               style: TextStyle(fontSize: 16),
+              textAlign: TextAlign.center,
             )),
         background: FadeInImage(
           placeholder: AssetImage('lib/assets/loading.gif'),
@@ -72,6 +73,8 @@ class _PosterAndTittle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final TextTheme textTheme = Theme.of(context).textTheme;
+    final size = MediaQuery.of(context).size;
+
     return Container(
       margin: EdgeInsets.only(top: 20),
       padding: EdgeInsets.symmetric(horizontal: 20),
@@ -84,43 +87,47 @@ class _PosterAndTittle extends StatelessWidget {
               // image: NetworkImage('https://via.placeholder.com/200x300'),
               image: NetworkImage(theMovie.fullPosterImag),
               height: 150,
+              width: 110,
             ),
           ),
           SizedBox(
             width: 20,
           ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                theMovie.title,
-                style: textTheme.headline5,
-                overflow: TextOverflow.ellipsis,
-                maxLines: 2,
-              ),
-              Text(
-                theMovie.originalTitle,
-                style: textTheme.subtitle1,
-                overflow: TextOverflow.ellipsis,
-                maxLines: 1,
-              ),
-              Row(
-                children: [
-                  Icon(
-                    Icons.star_outline,
-                    size: 20,
-                    color: Colors.grey,
-                  ),
-                  SizedBox(
-                    width: 5,
-                  ),
-                  Text(
-                    theMovie.voteAverage.toString(),
-                    style: textTheme.caption,
-                  )
-                ],
-              ),
-            ],
+          ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: size.width - 200),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  theMovie.title,
+                  style: textTheme.headline5,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 2,
+                ),
+                Text(
+                  theMovie.originalTitle,
+                  style: textTheme.subtitle1,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 2,
+                ),
+                Row(
+                  children: [
+                    Icon(
+                      Icons.star_outline,
+                      size: 20,
+                      color: Colors.grey,
+                    ),
+                    SizedBox(
+                      width: 5,
+                    ),
+                    Text(
+                      theMovie.voteAverage.toString(),
+                      style: textTheme.caption,
+                    )
+                  ],
+                ),
+              ],
+            ),
           )
         ],
       ),
