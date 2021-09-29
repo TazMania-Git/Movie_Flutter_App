@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:movie_app/models/models.dart';
 import 'package:movie_app/models/popular_response.dart';
+import 'package:movie_app/models/search_response.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 
@@ -13,7 +14,7 @@ class MoviesProvider extends ChangeNotifier {
   List<Movie> onDisplayMovies = [];
   List<Movie> popularMovies = [];
   int _popularPage = 0;
-  Map<int,List<Cast>> movieCasting = {};
+  Map<int, List<Cast>> movieCasting = {};
 
   MoviesProvider() {
     print('MoviesProvider inicializado');
@@ -22,7 +23,7 @@ class MoviesProvider extends ChangeNotifier {
   }
 
   Future<String> _getJsonData(String endPoint, [int page = 1]) async {
-    var url = Uri.https(_baseUrl, endPoint,
+    final url = Uri.https(_baseUrl, endPoint,
         {'api_key': _apiKey, 'languaje': _languaje, 'page': '$page'});
     final response = await http.get(url);
     return response.body;
@@ -45,13 +46,14 @@ class MoviesProvider extends ChangeNotifier {
 
   getPopularMovies() async {
     _popularPage++;
-    final getJsonData = await _getJsonData('3/movie/popular',_popularPage);
+    final getJsonData = await _getJsonData('3/movie/popular', _popularPage);
     final popularResponse = PopularResponse.fromJson(getJsonData);
     popularMovies = [...popularMovies, ...popularResponse.results];
     notifyListeners();
   }
 
- Future<List<Cast>> getMovieCast(int movieId) async{
+  Future<List<Cast>> getMovieCast(int movieId) async {
+    if (movieCasting.containsKey(movieId)) return movieCasting[movieId]!;
 
     final getJsonData = await _getJsonData('3/movie/$movieId/credits');
     final creditsResponse = CreditsResponse.fromJson(getJsonData);
@@ -59,8 +61,14 @@ class MoviesProvider extends ChangeNotifier {
     movieCasting[movieId] = creditsResponse.cast;
 
     return creditsResponse.cast;
+  }
 
-}
+  Future<List<Movie>> searchMovies(String query) async {
+    final url = Uri.https(_baseUrl, '3/search/movie',
+        {'api_key': _apiKey, 'languaje': _languaje, 'query': query});
 
-
+    final response = await http.get(url);
+    final searchResponse = SearchResponse.fromJson(response.body);
+    return searchResponse.results;
+  }
 }
