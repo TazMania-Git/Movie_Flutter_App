@@ -54,7 +54,7 @@ class MovieSearchDelegate extends SearchDelegate {
 
         return ListView.builder(
             itemCount: movie.length,
-            itemBuilder: (_, int index) => _MovieSuggestions(movie[index],'${movie[index].title}-index'));
+            itemBuilder: (_, int index) => _MovieSuggestions(movie[index]));
       },
     );
   }
@@ -62,12 +62,12 @@ class MovieSearchDelegate extends SearchDelegate {
 
 class _MovieSuggestions extends StatelessWidget {
   final Movie movie;
-  final String heroId;
-  const _MovieSuggestions(this.movie, this.heroId);
+  const _MovieSuggestions(this.movie);
 
   @override
   Widget build(BuildContext context) {
-    movie.heroId = heroId;
+    movie.heroId = 'search-${movie.id}';
+
     return ListTile(
       leading: Hero(
         tag: movie.heroId!,
@@ -81,7 +81,7 @@ class _MovieSuggestions extends StatelessWidget {
       title: Text(movie.title),
       subtitle: Text(movie.originalTitle),
       onTap: () {
-        Navigator.pushNamed(context, 'details', arguments: movie.heroId!);
+        Navigator.pushNamed(context, 'details', arguments: movie);
       },
     );
   }
